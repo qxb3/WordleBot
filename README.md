@@ -20,5 +20,10 @@ yarn start
 yarn dev #Running development
 ```
 
+# TODOS
+1: Using custom images instead of emojis
+2: A leaderboard system
+3: Make it so you can only play each day
+
 # Contributing
-if u want some changes just make a pr, I'll merge them pretty quickly :)
+Just make a pr, I'll merge them pretty quickly :)
