@@ -1,6 +1,7 @@
+const { MessageActionRow, MessageButton } = require('discord.js')
 const { Command } = require('@sapphire/framework')
 
-const { getTestServers, getEmojis } = require('@utils/constants')
+const { getTestServers } = require('@utils/constants')
 const { createEmbed } = require('@utils/responses')
 
 class HowToPlayCommand extends Command {
@@ -10,14 +11,14 @@ class HowToPlayCommand extends Command {
       description: 'Helps to play the wordle game',
       chatInputCommand: {
         register: true,
-        //guildIds: getTestServers(),
+        guildIds: getTestServers(),
         idHints: ['940138284305248276'],
         behaviorWhenNotIdentical: 'OVERWRITE'
       }
     })
   }
 
-  chatInputRun(interaction) {
+  async chatInputRun(interaction) {
     const embed = createEmbed()
       .setTitle('How to play')
       .setDescription(
@@ -31,9 +32,18 @@ After each guess, the color of the tiles will change to show how close your gues
       )
       .setImage('attachment://examples.png')
 
-    interaction.reply({
+    const actionRow = new MessageActionRow()
+      .setComponents(
+        new MessageButton()
+          .setLabel('Support Server')
+          .setURL('https://discord.gg/aAqzzYM9A4')
+          .setStyle('LINK')
+      )
+
+    await interaction.reply({
       embeds: [ embed ],
-      files: ['assets/examples.png']
+      files: ['assets/examples.png'],
+      components: [ actionRow ]
     })
   }
 }
