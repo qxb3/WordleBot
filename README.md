@@ -20,4 +20,4 @@ yarn dev #Running development
 ```
 
 # Contributing
-Idk, if u want some changes just make a pr
+if u want some changes just make a pr, I'll merge them pretty quickly :)
