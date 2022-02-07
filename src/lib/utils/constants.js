@@ -9,7 +9,7 @@ const BrandingColors = {
 
 const getTestServers = () => {
   return [
-    '917358098241445909'
+    '940260936957173800'
   ]
 }
 
