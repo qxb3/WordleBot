@@ -1,13 +1,13 @@
 # Wordle Bot
 
 A simple yet fun wordle discord bot!
-Invite Link: [Wordle Bot](https://discord.com/api/oauth2/authorize?client_id=940082404968767509&permissions=137439397952&scope=bot%20applications.commands
+Invite Link: [Wordle Bot](https://discord.com/api/oauth2/authorize?client_id=940082404968767509&permissions=137439397952&scope=bot%20applications.commands)
 
 # Getting started
 
 ## Installation
 ```bash
-git clone https://github.com/qxb3/WordleBot.git)
+git clone https://github.com/qxb3/WordleBot.git
 cd WordleBot
 yarn #if using npm: 'npm install'
 ```
