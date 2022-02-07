@@ -21,9 +21,9 @@ yarn dev #Running development
 ```
 
 # TODOS
-1: Using custom images instead of emojis
-2: A leaderboard system
-3: Make it so you can only play each day
+1: Using custom images instead of emojis<br>
+2: A leaderboard system<br>
+3: Make it so you can only play each day<br>
 
 # Contributing
 Just make a pr, I'll merge them pretty quickly :)
