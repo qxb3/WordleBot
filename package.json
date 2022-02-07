@@ -1,10 +1,15 @@
 {
   "name": "wordle-bot",
   "description": "A simple wordle discord bot!",
+  "repository": {
+    "url": "https://github.com/qxb3/WordleBot",
+    "type": "github"
+  },
   "version": "1.0.0",
   "license": "MIT",
   "author": {
-    "name": "qxb3"
+    "name": "qxb3",
+    "url": "https://github.com/qxb3"
   },
   "main": "src/index.js",
   "scripts": {
