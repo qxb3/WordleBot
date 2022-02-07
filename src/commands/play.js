@@ -4,7 +4,7 @@ const { getTestServers, BrandingColors } = require('@utils/constants')
 const { createEmbed } = require('@utils/responses')
 const { generateRandomWord, checkIfValidWord, convertTable, updateTable } = require('@utils/game')
 
-class StartCommand extends Command {
+class PlayCommand extends Command {
   constructor(context, options) {
     super(context, {
       ...options,
@@ -32,8 +32,6 @@ class StartCommand extends Command {
     ]
     let tries = 0
     let win = false
-
-    console.log(randomWord.join(''))
 
     const user = interaction.user
     const clientUser = this.container.client.user
@@ -123,4 +121,4 @@ class StartCommand extends Command {
   }
 }
 
-module.exports = StartCommand
+module.exports = PlayCommand
