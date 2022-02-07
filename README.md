@@ -9,6 +9,7 @@ Invite Link: [Wordle Bot](https://discord.com/api/oauth2/authorize?client_id=940
 ```bash
 git clone https://github.com/qxb3/WordleBot.git
 cd WordleBot
+yarn #if using npm: 'npm install'
 ```
 
 ## Running
