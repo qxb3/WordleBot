@@ -15,8 +15,7 @@ const getTestServers = () => {
 
 const getDevIds = () => {
   return [
-    //'591150858830479381'
-    'sjjsjd'
+    '591150858830479381'
   ]
 }
 
