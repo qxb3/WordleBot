@@ -56,6 +56,10 @@ class PlayCommand extends Command {
         return await interaction.followUp({ content: 'The word cannot be less than or higher than 5', ephemeral: true })
       }
 
+      if (!checkIfValidWord(content)) {
+        return await interaction.followUp({ content: `\`${content}\` is not a valid word`, ephemeral: true })
+      }
+
       const currentTable = table[++counter]
 
       for (let i = 0; i < randomWord.length; i++) {
@@ -80,10 +84,6 @@ class PlayCommand extends Command {
       gameEmbed.setDescription(convertTable(table))
 
       await gameMessage.edit({ embeds: [ gameEmbed ] })
-
-      if (!checkIfValidWord(content)) {
-        return await interaction.followUp({ content: `\`${content}\` is not a valid word`, ephemeral: true })
-      }
 
       if (content === randomWord.join('')) {
         win = true
