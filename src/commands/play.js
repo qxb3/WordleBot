@@ -90,7 +90,7 @@ class PlayCommand extends Command {
         collector.stop()
       }
 
-      if (counter >= 4) {
+      if (counter >= 5) {
         collector.stop()
       }
     })
