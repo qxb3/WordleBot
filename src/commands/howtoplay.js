@@ -1,7 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
 const { Command } = require('@sapphire/framework')
 
-const { getTestServers } = require('@utils/constants')
+const { getTestServers, getEmojis } = require('@utils/constants')
 const { createEmbed } = require('@utils/responses')
 
 class HowToPlayCommand extends Command {
@@ -19,6 +19,8 @@ class HowToPlayCommand extends Command {
   }
 
   async chatInputRun(interaction) {
+    const emojis = getEmojis()
+
     const embed = createEmbed()
       .setTitle('How to play')
       .setDescription(
@@ -26,10 +28,17 @@ class HowToPlayCommand extends Command {
 Use command \`/play\` to get started
 
 Guess the WORDLE in 6 tries.
-Each guess must be a valid 5 letter word. Hit the enter button to submit.
+Each guess must be a valid 5 letter wor.
 After each guess, the color of the tiles will change to show how close your guess was to the word.
+
+${emojis[0].value} - A blank tile
+${emojis[1].value} - The letter is not in the random word
+${emojis[2].value} - The letter is **in** the random word but **not** in the correct spot
+${emojis[3].value} - The letter is **in** the random word and **in** the correct spot
 `
       )
+      .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+      .setTimestamp()
       .setImage('attachment://examples.png')
 
     const actionRow = new MessageActionRow()
