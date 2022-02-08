@@ -1,3 +1,5 @@
+const { MessageActionRow, MessageButton } = require('discord.js')
+
 const { Command } = require('@sapphire/framework')
 
 const { getTestServers, BrandingColors } = require('@utils/constants')
@@ -21,6 +23,10 @@ class PlayCommand extends Command {
   async chatInputRun(interaction) {
     const randomWord = generateRandomWord().split('')
 
+    let tries = 0
+    let win = false
+    let canceled = false
+
     let counter = -1
     let table = [
       [ 0, 0, 0, 0, 0 ],
@@ -30,26 +36,43 @@ class PlayCommand extends Command {
       [ 0, 0, 0, 0, 0 ],
       [ 0, 0, 0, 0, 0 ]
     ]
-    let tries = 0
-    let win = false
 
     const user = interaction.user
     const clientUser = this.container.client.user
 
     const gameEmbed = createEmbed()
-      .setAuthor({ name: `${user.username} - ${clientUser.username}`, iconURL:user.displayAvatarURL({ dynamic: true }) })
+      .setAuthor({ name: user.username, iconURL: user.displayAvatarURL({ dynamic: true }) })
       .setDescription(convertTable(table))
-      .setFooter({ text: clientUser.username, iconURL: this.container.client.user.displayAvatarURL({ dynamic: true }) })
+      .setFooter({ text: clientUser.username, iconURL: clientUser.displayAvatarURL({ dynamic: true }) })
       .setTimestamp()
 
-    const gameMessage = await interaction.reply({ embeds: [ gameEmbed ], fetchReply: true })
-    const filter = (message) => message.author.id === interaction.user.id
-    const collector = interaction.channel.createMessageCollector({
-      filter,
-      time: 1000 * 60 * 5
+    const actionRow = new MessageActionRow()
+      .addComponents(
+        new MessageButton()
+          .setLabel('Cancel')
+          .setStyle('DANGER')
+          .setCustomId('cancel')
+      )
+
+    let gameMessage = await interaction.reply({
+      embeds: [ gameEmbed ],
+      components: [ actionRow ],
+      fetchReply: true
     })
 
-    collector.on('collect', async (message) => {
+    const messageFilter = (message) => message.author.id === interaction.user.id
+    const messageCollector = interaction.channel.createMessageCollector({
+      filter: messageFilter,
+      time: 1000 * 60 * 2
+    })
+
+    const buttonFilter = (buttonInteraction) => buttonInteraction.user.id === interaction.user.id
+    const buttonCollector = gameMessage.createMessageComponentCollector({
+      filter: buttonFilter,
+      time: 1000 * 60 * 2
+    })
+
+    messageCollector.on('collect', async (message) => {
       const content = message.content.toLowerCase()
 
       if (content.length < 5 || content.length > 5) {
@@ -57,7 +80,9 @@ class PlayCommand extends Command {
       }
 
       if (!checkIfValidWord(content)) {
-        return await interaction.followUp({ content: `\`${content}\` is not a valid word`, ephemeral: true })
+        return await message.reply({
+          content: `\`${content}\` is not a valid word`
+        })
       }
 
       const currentTable = table[++counter]
@@ -83,40 +108,62 @@ class PlayCommand extends Command {
       table = updateTable(table, counter, currentTable)
       gameEmbed.setDescription(convertTable(table))
 
-      await gameMessage.edit({ embeds: [ gameEmbed ] })
+      gameMessage = await message.reply({
+        embeds: [ gameEmbed ],
+        components: [ actionRow ]
+      })
 
       if (content === randomWord.join('')) {
         win = true
-        collector.stop()
+        messageCollector.stop()
       }
 
       if (counter >= 5) {
-        collector.stop()
+        messageCollector.stop()
       }
     })
 
-
-    collector.on('end', async (messages) => {
-      gameEmbed.author.name += ' (Ended)'
+    messageCollector.on('end', async (messages) => {
+      gameEmbed.author.name += canceled ? ' (Canceled)' : ' (Ended)'
       gameEmbed.setColor(BrandingColors.Error)
 
-      if (messages.size === 0) {
-        return await interaction.followUp({ content: 'You didn\'t respond!', ephemeral: true })
+      await gameMessage.edit({
+        embeds: [ gameEmbed ]
+      })
+
+      if (messages.size === 0 && !canceled) {
+        return await interaction.channel.send({
+          content: `<@${user.id}> You didn\'t respond!`
+        })
       }
 
-      const resultEmbed = createEmbed()
-        .setAuthor({ name: `${user.username} Result`, iconURL:user.displayAvatarURL({ dynamic: true }) })
-        .setDescription(
-          `${win === true ? 'You guessed it!\n' : 'You didn\'t guessed it :(\n'}` +
-          `Tries: ${tries}\n` +
-          `Word: ${randomWord.join('')}\n\n` +
-          convertTable(table)
-        )
-        .setFooter({ text: clientUser.username, iconURL: this.container.client.user.displayAvatarURL({ dynamic: true }) })
-        .setTimestamp()
-        .setColor(win === true ? BrandingColors.Success : BrandingColors.Error)
+      if (!canceled) {
+        const resultEmbed = createEmbed()
+          .setAuthor({ name: `${user.username} Result`, iconURL: user.displayAvatarURL({ dynamic: true }) })
+          .setDescription(
+            `${win ? 'You guessed it!\n' : 'You didn\'t guessed it\n'}` +
+            `Tries: ${tries}\n` +
+            `Word: ${randomWord.join('')}\n\n` +
+            convertTable(table)
+          )
+          .setFooter({ text: clientUser.username, iconURL: clientUser.displayAvatarURL({ dynamic: true }) })
+          .setTimestamp()
+          .setColor(win ? BrandingColors.Success : BrandingColors.Error)
 
-      await interaction.followUp({ embeds: [ resultEmbed ] })
+        await interaction.channel.send({ embeds: [ resultEmbed ] })
+      }
+    })
+
+    buttonCollector.on('collect', async () => {
+      actionRow.components[0].setDisabled(true)
+      canceled = true
+
+      await gameMessage.edit({
+        embeds: [ gameEmbed ],
+        components: [ actionRow ]
+      })
+
+      messageCollector.stop()
     })
   }
 }
