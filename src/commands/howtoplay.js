@@ -11,7 +11,7 @@ class HowToPlayCommand extends Command {
       description: 'Helps to play the wordle game',
       chatInputCommand: {
         register: true,
-        guildIds: getTestServers(),
+        //guildIds: getTestServers(),
         idHints: ['940138284305248276'],
         behaviorWhenNotIdentical: 'OVERWRITE'
       }

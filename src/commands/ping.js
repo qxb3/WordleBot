@@ -16,7 +16,7 @@ class PingCommand extends Command {
   async chatInputRun(interaction) {
     const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true })
     const ping = sent.createdTimestamp - interaction.createdTimestamp
-    sent.edit(`Pong! That took ${ping}ms. Latency: ${this.container.client.ws.ping}`)
+    sent.edit(`Pong! That took ${ping}ms. Latency: ${this.container.client.ws.ping}ms`)
   }
 }
 
