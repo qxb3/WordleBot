@@ -22,7 +22,7 @@
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "module-alias": "^2.2.2",
-    "mongoose": "^6.2.0",
+    "mongoose": "^6.4.6",
     "random-words": "^1.1.2"
   },
   "devDependencies": {
